@@ -15,11 +15,11 @@ import java.util.Map;
 public class CalculatorService {
   public ResponseDto calculate(BigDecimal newAmount, BigDecimal oldAmount) {
     log.debug("[CALCULATOR_SERVICE] -> Start calculation: newAmount={}, oldAmount={}", newAmount, oldAmount);
-    Map<BigDecimal, Integer> newAmountMap = buildMap(newAmount);
-    Map<BigDecimal, Integer> oldAmountMap = buildMap(oldAmount);
+    Map<String, Integer> newAmountMap = buildMap(newAmount);
+    Map<String, Integer> oldAmountMap = buildMap(oldAmount);
 
-    Map<BigDecimal, Integer> newDenominationsMap = new LinkedHashMap<>();
-    Map<BigDecimal, Integer> differenceMap = new LinkedHashMap<>();
+    Map<String, Integer> newDenominationsMap = new LinkedHashMap<>();
+    Map<String, Integer> differenceMap = new LinkedHashMap<>();
 
     buildFormatedMaps(newAmountMap, oldAmountMap, newDenominationsMap, differenceMap);
 
@@ -34,10 +34,10 @@ public class CalculatorService {
   /**
    * Formatiert die Maps für die Ausgabe
    */
-  private void buildFormatedMaps(Map<BigDecimal, Integer> newAmountMap, Map<BigDecimal, Integer> oldAmountMap,
-      Map<BigDecimal, Integer> newDenominationsMap, Map<BigDecimal, Integer> differenceMap) {
+  private void buildFormatedMaps(Map<String, Integer> newAmountMap, Map<String, Integer> oldAmountMap,
+      Map<String, Integer> newDenominationsMap, Map<String, Integer> differenceMap) {
     for (EuroDenominationEnum euroDenominationEnum : EuroDenominationEnum.values()) {
-      BigDecimal value = euroDenominationEnum.getValue();
+      String value = euroDenominationEnum.getValue().toString();
 
       int newCount = newAmountMap.getOrDefault(value, 0);
       int oldCount = oldAmountMap.getOrDefault(value, 0);
@@ -52,9 +52,9 @@ public class CalculatorService {
   /**
    * Berechnet Stückelungen
    */
-  private Map<BigDecimal, Integer> buildMap(BigDecimal amount) {
+  private Map<String, Integer> buildMap(BigDecimal amount) {
     BigDecimal rest = amount;
-    Map<BigDecimal, Integer> map = new LinkedHashMap<>();
+    Map<String, Integer> map = new LinkedHashMap<>();
 
     for (EuroDenominationEnum euroDenominationEnum : EuroDenominationEnum.values()) {
       if (rest.compareTo(BigDecimal.ZERO) <= 0) {
@@ -67,7 +67,7 @@ public class CalculatorService {
       int index = result[0].intValue();
 
       if (index > 0) {
-        map.put(denominationValue, index);
+        map.put(denominationValue.toString(), index);
         rest = result[1].setScale(2, RoundingMode.HALF_UP);
       }
     }
