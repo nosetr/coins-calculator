@@ -4,3 +4,8 @@ server:
 spring:
   application:
     name: calculate
+
+logging:
+  level:
+    root: INFO
+    de.osetrov.calculate: DEBUG
