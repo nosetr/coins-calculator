@@ -1,7 +1,7 @@
 package de.osetrov.calculate.service;
 
 import de.osetrov.calculate.dto.ResponseDto;
-import de.osetrov.calculate.enums.EuroDenomination;
+import de.osetrov.calculate.enums.EuroDenominationEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -36,8 +36,8 @@ public class CalculatorService {
    */
   private void buildFormatedMaps(Map<BigDecimal, Integer> newAmountMap, Map<BigDecimal, Integer> oldAmountMap,
       Map<BigDecimal, Integer> newDenominationsMap, Map<BigDecimal, Integer> differenceMap) {
-    for (EuroDenomination euroDenomination : EuroDenomination.values()) {
-      BigDecimal value = euroDenomination.getValue();
+    for (EuroDenominationEnum euroDenominationEnum : EuroDenominationEnum.values()) {
+      BigDecimal value = euroDenominationEnum.getValue();
 
       int newCount = newAmountMap.getOrDefault(value, 0);
       int oldCount = oldAmountMap.getOrDefault(value, 0);
@@ -56,12 +56,12 @@ public class CalculatorService {
     BigDecimal rest = amount;
     Map<BigDecimal, Integer> map = new LinkedHashMap<>();
 
-    for (EuroDenomination euroDenomination : EuroDenomination.values()) {
+    for (EuroDenominationEnum euroDenominationEnum : EuroDenominationEnum.values()) {
       if (rest.compareTo(BigDecimal.ZERO) <= 0) {
         break;
       }
 
-      BigDecimal denominationValue = euroDenomination.getValue();
+      BigDecimal denominationValue = euroDenominationEnum.getValue();
 
       BigDecimal[] result = rest.divideAndRemainder(denominationValue);
       int index = result[0].intValue();

@@ -4,7 +4,7 @@ import lombok.Getter;
 
 import java.math.BigDecimal;
 
-public enum EuroDenomination {
+public enum EuroDenominationEnum {
   EURO_200("200.00"),
   EURO_100("100.00"),
   EURO_50("50.00"),
@@ -23,7 +23,7 @@ public enum EuroDenomination {
   @Getter
   private final BigDecimal value;
 
-  EuroDenomination(String value) {
+  EuroDenominationEnum(String value) {
     this.value = new BigDecimal(value);
   }
 }
