@@ -9,8 +9,8 @@ import java.math.BigDecimal;
 
 @Getter
 public class RequestDto {
-  @NotNull(message = "The new amount must not be NULL.")
-  @DecimalMin(value = "0.00", message = "Der neue Betrag darf nicht negativ sein")
+  @NotNull(message = "The new amount must not be NULL")
+  @DecimalMin(value = "0.00", message = "The amount must not be negative")
   @Schema(
       description = "Der neu zu berechnende Geldbetrag (muss >= 0.00 sein)",
       example = "120.50",
@@ -18,7 +18,7 @@ public class RequestDto {
   )
   BigDecimal newAmount;
 
-  @DecimalMin(value = "0.00", message = "The amount must not be negative.")
+  @DecimalMin(value = "0.00", message = "The amount must not be negative")
   @Schema(
       description = "Der alte Vergleichsbetrag (optional, muss >= 0.00 sein)",
       example = "100.00",

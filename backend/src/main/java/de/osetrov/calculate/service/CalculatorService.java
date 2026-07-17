@@ -15,13 +15,15 @@ import java.util.Map;
 public class CalculatorService {
   public ResponseDto calculate(BigDecimal newAmount, BigDecimal oldAmount) {
     log.debug("[CALCULATOR_SERVICE] -> Start calculation: newAmount={}, oldAmount={}", newAmount, oldAmount);
+    boolean hasOldAmount = oldAmount != null && oldAmount.compareTo(BigDecimal.ZERO) > 0;
+
     Map<String, Integer> newAmountMap = buildMap(newAmount);
-    Map<String, Integer> oldAmountMap = buildMap(oldAmount);
+    Map<String, Integer> oldAmountMap = hasOldAmount ? buildMap(oldAmount) : new LinkedHashMap<>();
 
     Map<String, Integer> newDenominationsMap = new LinkedHashMap<>();
-    Map<String, Integer> differenceMap = new LinkedHashMap<>();
+    Map<String, Integer> differenceMap = hasOldAmount ? new LinkedHashMap<>() : null;
 
-    buildFormatedMaps(newAmountMap, oldAmountMap, newDenominationsMap, differenceMap);
+    buildFormatedMaps(newAmountMap, oldAmountMap, newDenominationsMap, differenceMap, hasOldAmount);
 
     return ResponseDto.builder()
         .newAmount(newAmount)
@@ -35,17 +37,22 @@ public class CalculatorService {
    * Formatiert die Maps für die Ausgabe
    */
   private void buildFormatedMaps(Map<String, Integer> newAmountMap, Map<String, Integer> oldAmountMap,
-      Map<String, Integer> newDenominationsMap, Map<String, Integer> differenceMap) {
+      Map<String, Integer> newDenominationsMap, Map<String, Integer> differenceMap, boolean hasOldAmount) {
+
     for (EuroDenominationEnum euroDenominationEnum : EuroDenominationEnum.values()) {
       String value = euroDenominationEnum.getValue().toString();
 
       int newCount = newAmountMap.getOrDefault(value, 0);
-      int oldCount = oldAmountMap.getOrDefault(value, 0);
-      int diff = newCount - oldCount;
       if (newCount > 0) {
         newDenominationsMap.put(value, newCount);
       }
-      differenceMap.put(value, diff);
+      if (hasOldAmount) {
+        int oldCount = oldAmountMap.getOrDefault(value, 0);
+        int diff = newCount - oldCount;
+        if (diff != 0 || newCount > 0) {
+          differenceMap.put(value, diff);
+        }
+      }
     }
   }
 

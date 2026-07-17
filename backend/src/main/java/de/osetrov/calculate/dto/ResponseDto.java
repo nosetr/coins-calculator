@@ -1,5 +1,6 @@
 package de.osetrov.calculate.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 
@@ -7,6 +8,7 @@ import java.math.BigDecimal;
 import java.util.Map;
 
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public record ResponseDto(
     @Schema(description = "neuer Betrag", example = "220.50")
     BigDecimal newAmount,
