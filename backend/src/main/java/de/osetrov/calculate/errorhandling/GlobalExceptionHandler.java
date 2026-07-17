@@ -19,18 +19,22 @@ public class GlobalExceptionHandler {
    */
   @SuppressWarnings("unused")
   @ExceptionHandler(MethodArgumentNotValidException.class)
-  public ResponseEntity<Map<String, String>> handleValidationExceptions(
+  public ResponseEntity<Map<String, Object>> handleValidationExceptions(
       MethodArgumentNotValidException ex) {
 
-    Map<String, String> errors = new HashMap<>();
+    Map<String, Object> response = new HashMap<>();
+    Map<String, String> messages = new HashMap<>();
 
     ex.getBindingResult().getAllErrors().forEach(error -> {
       String fieldName = ((FieldError) error).getField();
       String errorMessage = error.getDefaultMessage();
-      errors.put(fieldName, errorMessage);
+      messages.put(fieldName, errorMessage);
       log.warn("[GLOBAL_EXCEPTION_HANDLER] -> Validation error in the field '{}': {}", fieldName, errorMessage);
     });
 
-    return ResponseEntity.badRequest().body(errors);
+    response.put("error", true);
+    response.put("messages", messages);
+
+    return ResponseEntity.badRequest().body(response);
   }
 }

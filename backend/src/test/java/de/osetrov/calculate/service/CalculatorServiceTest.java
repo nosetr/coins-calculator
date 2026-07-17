@@ -73,4 +73,47 @@ class CalculatorServiceTest {
     assertEquals(expectedDenomination, response.newDenomination());
     assertNull(response.difference());
   }
+
+  @Test
+  void calculate_WithNullOldAmount_ShouldReturnCorrectResultWithoutDifference() {
+    BigDecimal newAmount = new BigDecimal("100.00");
+
+    ResponseDto response = calculatorService.calculate(newAmount, null);
+
+    assertEquals(newAmount, response.newAmount());
+    assertNull(response.oldAmount());
+
+    Map<String, Integer> expectedDenomination = Map.of("100.00", 1);
+    assertEquals(expectedDenomination, response.newDenomination());
+    assertNull(response.difference());
+  }
+
+  @Test
+  void calculate_WithZeroNewAmountAndWithZeroOldAmount_ShouldReturnEmptyDenominationWithoutDifference() {
+    BigDecimal newAmount = new BigDecimal("0.00");
+    BigDecimal oldAmount = BigDecimal.ZERO;
+
+    ResponseDto response = calculatorService.calculate(newAmount, oldAmount);
+
+    assertEquals(newAmount, response.newAmount());
+    assertEquals(oldAmount, response.oldAmount());
+
+    assertTrue(response.newDenomination().isEmpty());
+    assertNull(response.difference());
+  }
+
+  @Test
+  void calculate_WithZeroNewAmount_ShouldReturnEmptyDenominationWithDifference() {
+    BigDecimal newAmount = new BigDecimal("0.00");
+    BigDecimal oldAmount = new BigDecimal("100.00");
+
+    ResponseDto response = calculatorService.calculate(newAmount, oldAmount);
+
+    assertEquals(newAmount, response.newAmount());
+    assertEquals(oldAmount, response.oldAmount());
+
+    Map<String, Integer> expectedDifference = Map.of("100.00", -1);
+    assertTrue(response.newDenomination().isEmpty());
+    assertEquals(expectedDifference, response.difference());
+  }
 }
