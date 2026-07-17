@@ -6,7 +6,8 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "generate-api": "openapi-generator-cli generate -i swagger.json -g typescript-angular -o src/app/generated-api --additional-properties=providedInRoot=true,connectionSource=signals"
   },
   "prettier": {
     "printWidth": 100,
@@ -36,6 +37,7 @@
     "@angular/build": "^21.0.3",
     "@angular/cli": "^21.0.3",
     "@angular/compiler-cli": "^21.0.0",
+    "@openapitools/openapi-generator-cli": "^2.39.1",
     "jsdom": "^27.1.0",
     "typescript": "~5.9.2",
     "vitest": "^4.0.8"
