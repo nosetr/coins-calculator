@@ -1,6 +1,22 @@
 server:
-  port: 8054
+  port: 8056
+  servlet:
+    context-path: /api
 
 spring:
   application:
     name: calculate
+
+app:
+  cors:
+    allowed-origins: "http://localhost:4200"
+
+
+springdoc:
+  swagger-ui:
+    path: /swagger
+
+logging:
+  level:
+    root: INFO
+    de.osetrov.calculate: DEBUG
