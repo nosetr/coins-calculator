@@ -1,4 +1,5 @@
 import { Component, input, computed, inject } from '@angular/core';
+import { TableTypeEnum } from '../../shared/enums';
 import { MatTableModule } from '@angular/material/table';
 import { CurrencyFormatPipe } from '../../pipes/currency-format.pipe';
 import { CountFormatPipe } from '../../pipes/count-format.pipe';
@@ -7,11 +8,6 @@ import { ResponseDto } from '../../generated-api';
 export interface TableItem {
   denomination: number;
   count: number;
-}
-
-export enum TableTypeEnum {
-  NEW_DENOMINATION,
-  DIFFERENCE
 }
 
 @Component({
@@ -53,8 +49,8 @@ export class TableComponent {
   });
 
   countHeader = computed(() => {
-    return this.type() === TableTypeEnum.DIFFERENCE 
-      ? 'Differenz' 
+    return this.type() === TableTypeEnum.DIFFERENCE
+      ? 'Differenz'
       : 'Anzahl';
   });
 
