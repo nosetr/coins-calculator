@@ -45,14 +45,14 @@
               <div class="col-12 col-md-4">
                 <mat-form-field appearance="outline" class="w-100">
                   <mat-label>Neuer Betrag</mat-label>
-                  <input id="newAmount" matInput type="number" formControlName="newAmount" />
+                  <input id="newAmount" matInput type="number" formControlName="newAmount" aria-label="Neuer Betrag" />
                 </mat-form-field>
               </div>
 
               <div class="col-12 col-md-4">
                 <mat-form-field appearance="outline" class="w-100">
-                  <mat-label for="oldAmount">Alter Betrag</mat-label>
-                  <input id="oldAmount" matInput formControlName="oldAmount" readonly />
+                  <mat-label for="previousAmount">Alter Betrag</mat-label>
+                  <input id="previousAmount" matInput formControlName="previousAmount" readonly aria-label="Alter Betrag" />
                 </mat-form-field>
               </div>
 
