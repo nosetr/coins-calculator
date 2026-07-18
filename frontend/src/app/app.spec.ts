@@ -1,7 +1,8 @@
 import { TestBed, ComponentFixture, fakeAsync, tick } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { of } from 'rxjs';
-import { App, CalculateTypeEnum } from './app';
+import { App } from './app';
+import { CalculateTypeEnum } from './shared/enums';
 import { WechselgeldRechnerService } from './generated-api';
 import { CalculatorService } from './services/calculator.service';
 
@@ -38,11 +39,11 @@ describe('App', () => {
 
     fixture = TestBed.createComponent(App);
     component = fixture.componentInstance;
-    
+
     // Wegen setTimeout-Fokus aus ngOnInit
     try {
       fixture.detectChanges();
-    } catch (e) {}
+    } catch (e) { }
   });
 
   it('should create the app', () => {
@@ -79,13 +80,13 @@ describe('App', () => {
       newAmount: 200,
       calculateType: CalculateTypeEnum.BACK
     });
-    
+
     component.onSubmit();
-    
-    // Wir warten die 200ms des setTimeouts einfach echt ab
-    await wait(200); 
-    fixture.detectChanges(); // Aktualisiert die UI nach dem Timeout
-    
+
+    // 200ms warten
+    await wait(200);
+    fixture.detectChanges();
+
     expect(component.isSubmitDisabled).toBe(true);
   });
 

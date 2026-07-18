@@ -1,6 +1,7 @@
 import { Component, signal, computed, OnInit, inject } from '@angular/core';
 import { FormGroup, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { TableComponent, TableTypeEnum } from './components/table/table.component';
+import { TableComponent } from './components/table/table.component';
+import { TableTypeEnum } from './shared/enums';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -12,11 +13,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { RequestDto, ResponseDto, WechselgeldRechnerService } from './generated-api';
 import { finalize } from 'rxjs';
 import { CalculatorService } from './services/calculator.service';
-
-export enum CalculateTypeEnum {
-  BACK = 'Backend',
-  FRONT = 'Frontend'
-}
+import { CalculateTypeEnum } from './shared/enums';
 
 @Component({
   selector: 'app-root',
