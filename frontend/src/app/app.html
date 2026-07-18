@@ -44,14 +44,14 @@
             <div class="row g-3 align-items-center">
               <div class="col-12 col-md-4">
                 <mat-form-field appearance="outline" class="w-100">
-                  <mat-label>Neuer Betrag</mat-label>
+                  <mat-label>Neuer Betrag (€)</mat-label>
                   <input id="newAmount" matInput type="number" formControlName="newAmount" aria-label="Neuer Betrag" />
                 </mat-form-field>
               </div>
 
               <div class="col-12 col-md-4">
                 <mat-form-field appearance="outline" class="w-100">
-                  <mat-label for="oldAmount">Alter Betrag</mat-label>
+                  <mat-label for="oldAmount">Alter Betrag (€)</mat-label>
                   <input id="oldAmount" matInput formControlName="oldAmount" readonly aria-label="Alter Betrag" />
                 </mat-form-field>
               </div>
@@ -67,9 +67,17 @@
                 </mat-form-field>
               </div>
             </div>
-            <div class="row g-1 align-items-center">
-              <div class="col-12">
-                <button mat-flat-button class="w-100" type="submit" [disabled]="form.invalid">Berechnen</button>
+
+            <div class="row g-3 mt-2">
+              <div class="col-12 col-md-6">
+                <button mat-flat-button class="w-100" type="submit" [disabled]="form.invalid">
+                  Berechnen
+                </button>
+              </div>
+              <div class="col-12 col-md-6">
+                <button mat-stroked-button class="w-100" type="button" [disabled]="!newAmount()" (click)="onReset()">
+                  Zurücksetzen
+                </button>
               </div>
             </div>
 
@@ -89,7 +97,7 @@
     <div class="col-12 col-lg-6">
       <mat-card class="h-100 shadow-sm">
         <mat-card-content class="p-3">
-          <app-table [type]="TableTypeEnum.NEW_DENOMINATION" [dataSource]="newDenominationData()" />
+          <app-table [type]="TableTypeEnum.NEW_DENOMINATION" [result]="calculationResult()" />
         </mat-card-content>
       </mat-card>
     </div>
@@ -98,7 +106,7 @@
     <div class="col-12 col-lg-6">
       <mat-card class="h-100 shadow-sm">
         <mat-card-content class="p-3">
-          <app-table [type]="TableTypeEnum.DIFFERENCE" [dataSource]="differenceData()" />
+          <app-table [type]="TableTypeEnum.DIFFERENCE" [result]="calculationResult()" />
         </mat-card-content>
       </mat-card>
     </div>

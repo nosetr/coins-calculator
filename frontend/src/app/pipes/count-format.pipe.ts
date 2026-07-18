@@ -12,4 +12,3 @@ export class CountFormatPipe implements PipeTransform {
     return (value > 0 && type === TableTypeEnum.DIFFERENCE) ? `+${value}` : `${value}`;
   }
 }
-  

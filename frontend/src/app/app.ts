@@ -1,6 +1,6 @@
 import { Component, signal, computed, OnInit, inject } from '@angular/core';
 import { FormGroup, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { TableComponent, TableItem, TableTypeEnum } from './components/table/table.component';
+import { TableComponent, TableTypeEnum } from './components/table/table.component';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -48,26 +48,6 @@ export class App implements OnInit {
   newAmount = computed(() => this.amountState().new);
   oldAmount = computed(() => this.amountState().previous);
 
-  // Array für die 'Neue Stückelung'
-  newDenominationData = computed<TableItem[]>(() => {
-    const result = this.calculationResult()?.newDenomination;
-    return this.buildArray(result);
-  });
-
-  // Array für die 'Differenz'
-  differenceData = computed<TableItem[]>(() => {
-    const result = this.calculationResult()?.difference;
-    return this.buildArray(result);
-  });
-
-  private buildArray(result: { [key: string]: number } | undefined | null): TableItem[] {
-    if (!result) return [];
-    return Object.entries(result).map(([denomination, count]) => ({
-      denomination: Number(denomination),
-      count: count
-    }));
-  }
-
   readonly calculateTypes = [
     { value: CalculateTypeEnum.BACKEND, label: 'Backend' },
     { value: CalculateTypeEnum.FRONTEND, label: 'Frontend' }
@@ -77,11 +57,22 @@ export class App implements OnInit {
   private readonly formBuilder = inject(FormBuilder);
 
   ngOnInit(): void {
+    this.initForm();
+  }
+
+  onReset(): void {
+    this.amountState.set({ new: null, previous: null });
+    this.calculationResult.set(null);
+    this.initForm();
+  }
+
+  private initForm(): void {
     this.form = this.formBuilder.group({
       newAmount: ['', [Validators.required, Validators.min(0)]],
       oldAmount: [{ value: this.oldAmount(), disabled: true }],
       calculateType: [CalculateTypeEnum.BACKEND, Validators.required],
     });
+    (document.getElementById('newAmount') as HTMLInputElement | null)?.focus(); // Focus
   }
 
   onSubmit() {
