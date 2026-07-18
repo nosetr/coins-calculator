@@ -10,8 +10,8 @@ export interface TableItem {
 }
 
 export enum TableTypeEnum {
-  NEW_DENOMINATION = 'NEW_DENOMINATION',
-  DIFFERENCE = 'DIFFERENCE'
+  NEW_DENOMINATION,
+  DIFFERENCE
 }
 
 @Component({
