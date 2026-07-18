@@ -1,6 +1,6 @@
 <div class="table-container">
   <h2>{{ tableTitle() }}</h2>
-  <table mat-table [dataSource]="dataSource" class="mat-elevation-z1">
+  <table mat-table [dataSource]="dataSource()" class="mat-elevation-z1">
     <ng-container matColumnDef="type">
       <th mat-header-cell *matHeaderCellDef>Schein/Münze</th>
       <td mat-cell *matCellDef="let element">
@@ -9,9 +9,9 @@
     </ng-container>
 
     <ng-container matColumnDef="count">
-      <th class="text-center" mat-header-cell *matHeaderCellDef>Anzahl</th>
+      <th class="text-center" mat-header-cell *matHeaderCellDef>{{ countHeader() }}</th>
       <td class="text-center" mat-cell *matCellDef="let element">
-        {{ element.count | countFormat}}
+        {{ element.count | countFormat: type() }}
       </td>
     </ng-container>
 

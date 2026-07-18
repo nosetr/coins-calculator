@@ -1,7 +1,17 @@
-import { Component, input } from '@angular/core';
+import { Component, input, computed } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
 import { CurrencyFormatPipe } from '../../pipes/currency-format.pipe';
 import { CountFormatPipe } from '../../pipes/count-format.pipe';
+
+export interface TableItem {
+  denomination: number;
+  count: number;
+}
+
+export enum TableTypeEnum {
+  NEW_DENOMINATION = 'NEW_DENOMINATION',
+  DIFFERENCE = 'DIFFERENCE'
+}
 
 @Component({
   selector: 'app-table',
@@ -15,13 +25,20 @@ import { CountFormatPipe } from '../../pipes/count-format.pipe';
   standalone: true
 })
 export class TableComponent {
-  tableTitle = input.required<string>();
+  dataSource = input.required<TableItem[]>();
+  type = input.required<TableTypeEnum>();
 
   columns = ['type', 'count'];
 
-  dataSource = [
-    { denomination: 50, count: -2 },
-    { denomination: 20, count: 1 },
-    { denomination: 2, count: 3 }
-  ];
+  tableTitle = computed(() => {
+    return this.type() === TableTypeEnum.DIFFERENCE 
+      ? 'Differenz zu' 
+      : 'Neue Stückelung';
+  });
+
+  countHeader = computed(() => {
+    return this.type() === TableTypeEnum.DIFFERENCE 
+      ? 'Differenz' 
+      : 'Anzahl';
+  });
 }

@@ -51,8 +51,8 @@
 
               <div class="col-12 col-md-4">
                 <mat-form-field appearance="outline" class="w-100">
-                  <mat-label for="previousAmount">Alter Betrag</mat-label>
-                  <input id="previousAmount" matInput formControlName="previousAmount" readonly aria-label="Alter Betrag" />
+                  <mat-label for="oldAmount">Alter Betrag</mat-label>
+                  <input id="oldAmount" matInput formControlName="oldAmount" readonly aria-label="Alter Betrag" />
                 </mat-form-field>
               </div>
 
@@ -83,23 +83,26 @@
 
   <mat-divider class="mb-4"></mat-divider>
 
-  <div class="row g-4">
+  @if (calculationResult()) {
+  <div class="row g-4 justify-content-center">
 
     <div class="col-12 col-lg-6">
       <mat-card class="h-100 shadow-sm">
         <mat-card-content class="p-3">
-          <app-table [tableTitle]="'Neue Stückelung'"></app-table>
+          <app-table [type]="TableTypeEnum.NEW_DENOMINATION" [dataSource]="newDenominationData()" />
         </mat-card-content>
       </mat-card>
     </div>
 
+    @if (calculationResult()?.difference) {
     <div class="col-12 col-lg-6">
       <mat-card class="h-100 shadow-sm">
         <mat-card-content class="p-3">
-          <app-table [tableTitle]="'Differenz zu'"></app-table>
+          <app-table [type]="TableTypeEnum.DIFFERENCE" [dataSource]="differenceData()" />
         </mat-card-content>
       </mat-card>
     </div>
-
+    }
   </div>
+  }
 </main>

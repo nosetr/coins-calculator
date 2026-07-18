@@ -1,4 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
+import { TableTypeEnum } from '../components/table/table.component';
 
 @Pipe({
   name: 'countFormat',
@@ -7,7 +8,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class CountFormatPipe implements PipeTransform {
 
-  transform(value: number): string {
-    return value > 0 ? `+${value}` : `${value}`;
+  transform(value: number, type: TableTypeEnum): string {
+    return (value > 0 && type === TableTypeEnum.DIFFERENCE) ? `+${value}` : `${value}`;
   }
 }
+  
