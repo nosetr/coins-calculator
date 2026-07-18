@@ -11,6 +11,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { RequestDto, ResponseDto, WechselgeldRechnerService } from './generated-api';
 import { finalize } from 'rxjs';
+import { CalculatorService } from './services/calculator.service';
 
 export enum CalculateTypeEnum {
   BACK = 'Backend',
@@ -37,6 +38,7 @@ export enum CalculateTypeEnum {
 export class App implements OnInit {
   protected readonly TableTypeEnum = TableTypeEnum;
   private readonly openApiService = inject(WechselgeldRechnerService);
+  private readonly calculatorService = inject(CalculatorService);
 
   isLoading = signal(false);
   private readonly amountState = signal<{ new: number | null; previous: number | null; calculateType: CalculateTypeEnum | null; }>({
@@ -73,6 +75,14 @@ export class App implements OnInit {
     });
     this.form.get('calculateType')?.valueChanges.subscribe(() => {
       this.calculationResult.set(null);
+      this.amountState.set({
+        new: null,
+        previous: null,
+        calculateType: null
+      });
+      this.form.patchValue({
+        oldAmount: null
+      });
     });
   }
 
@@ -100,12 +110,11 @@ export class App implements OnInit {
     if (this.form?.valid) {
       const formValues = this.form.getRawValue();
       const newAmount = formValues.newAmount;
+      const calculateType = formValues.calculateType;
 
-      if (newAmount === this.newAmount()) {
+      if (newAmount === this.newAmount() && calculateType === this.calculateType()) {
         return;
       }
-
-      const calculateType = formValues.calculateType;
 
       this.isLoading.set(true);
       this.amountState.update(state => ({
@@ -127,27 +136,37 @@ export class App implements OnInit {
   }
 
   private calculateOnFrontend(): void {
-    return;
+    setTimeout(() => {
+      const oldAmount = this.oldAmount();
+      const newAmount = this.newAmount();
+      const result = this.calculatorService.calculate(newAmount!, oldAmount);
+
+      this.calculationResult.set(result);
+      this.isLoading.set(false);
+      console.log('Calculation with success by frontend:', result);
+    }, 200);
   }
 
   private calculateOnBackend(): void {
-    const request: RequestDto = {
-      newAmount: this.newAmount()!,
-      oldAmount: this.oldAmount() ?? undefined
-    };
+    setTimeout(() => {
+      const request: RequestDto = {
+        newAmount: this.newAmount()!,
+        oldAmount: this.oldAmount() ?? undefined
+      };
 
-    this.openApiService.calculate(request)
-      .pipe(
-        finalize(() => this.isLoading.set(false))
-      )
-      .subscribe({
-        next: (response: ResponseDto) => {
-          this.calculationResult.set(response);
-          console.log('Calculation with success by backend:', response);
-        },
-        error: (err) => {
-          console.error('Error by backend calculation:', err);
-        }
-      });
+      this.openApiService.calculate(request)
+        .pipe(
+          finalize(() => this.isLoading.set(false))
+        )
+        .subscribe({
+          next: (response: ResponseDto) => {
+            this.calculationResult.set(response);
+            console.log('Calculation with success by backend:', response);
+          },
+          error: (err) => {
+            console.error('Error by backend calculation:', err);
+          }
+        });
+    }, 200);
   }
 }

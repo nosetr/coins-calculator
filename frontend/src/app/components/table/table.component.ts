@@ -1,4 +1,4 @@
-import { Component, input, computed } from '@angular/core';
+import { Component, input, computed, inject } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
 import { CurrencyFormatPipe } from '../../pipes/currency-format.pipe';
 import { CountFormatPipe } from '../../pipes/count-format.pipe';
@@ -21,6 +21,9 @@ export enum TableTypeEnum {
     MatTableModule,
     CountFormatPipe
   ],
+  providers: [
+    CurrencyFormatPipe
+  ],
   templateUrl: './table.component.html',
   styleUrl: './table.component.scss',
   standalone: true
@@ -29,12 +32,24 @@ export class TableComponent {
   type = input.required<TableTypeEnum>();
   result = input.required<ResponseDto | null>();
 
+  private readonly currencyFormatPipe = inject(CurrencyFormatPipe);
+
   columns = ['type', 'count'];
 
   tableTitle = computed(() => {
-    return this.type() === TableTypeEnum.DIFFERENCE 
-      ? 'Differenz zu ' + (this.result()?.oldAmount) + '€'
-      : 'Neue Stückelung ' + (this.result()?.newAmount) + '€';
+    const res = this.result();
+
+    if (this.type() === TableTypeEnum.DIFFERENCE) {
+      const formatted = res?.oldAmount !== undefined && res?.oldAmount !== null
+        ? this.currencyFormatPipe.transform(res.oldAmount)
+        : '';
+      return `Differenz zu ${formatted}`;
+    } else {
+      const formatted = res?.newAmount !== undefined && res?.newAmount !== null
+        ? this.currencyFormatPipe.transform(res.newAmount)
+        : '';
+      return `Neue Stückelung ${formatted}`;
+    }
   });
 
   countHeader = computed(() => {
