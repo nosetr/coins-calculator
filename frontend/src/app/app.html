@@ -45,7 +45,8 @@
               <div class="col-12 col-md-4">
                 <mat-form-field appearance="outline" class="w-100">
                   <mat-label>Neuer Betrag (€)</mat-label>
-                  <input id="newAmount" matInput type="number" formControlName="newAmount" aria-label="Neuer Betrag" />
+                  <input id="newAmount" matInput formControlName="newAmount" aria-label="Neuer Betrag"
+                    (blur)="formatInputAmount(form.get('newAmount'))" step="0.01" min="0" />
                 </mat-form-field>
               </div>
 
