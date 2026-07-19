@@ -1,7 +1,7 @@
 import { Component, signal, computed, OnInit, inject } from '@angular/core';
-import { FormGroup, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, ReactiveFormsModule, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { TableComponent } from './components/table/table.component';
-import { TableTypeEnum } from './shared/enums';
+import { TableTypeEnum, CalculateTypeEnum } from './shared/enums';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -13,7 +13,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { RequestDto, ResponseDto, WechselgeldRechnerService } from './generated-api';
 import { finalize } from 'rxjs';
 import { CalculatorService } from './services/calculator.service';
-import { CalculateTypeEnum } from './shared/enums';
 
 @Component({
   selector: 'app-root',
@@ -61,15 +60,19 @@ export class App implements OnInit {
     this.initForm();
   }
 
-  private initForm(): void {
-    this.form = this.formBuilder.group({
-      newAmount: ['', [Validators.required, Validators.min(0)]],
-      oldAmount: [{ value: this.oldAmount(), disabled: true }],
-      calculateType: [CalculateTypeEnum.BACK, Validators.required],
-    });
+  private focusInput(): void {
     setTimeout(() => {
       (document.getElementById('newAmount') as HTMLInputElement | null)?.focus();
     });
+  }
+
+  private initForm(): void {
+    this.form = this.formBuilder.group({
+      newAmount: ['', [Validators.required, Validators.min(0), Validators.pattern(/^\d+([.,]\d{1,2})?$/)]],
+      oldAmount: [{ value: this.oldAmount(), disabled: true }],
+      calculateType: [CalculateTypeEnum.BACK, Validators.required],
+    });
+    this.focusInput();
     this.form.get('calculateType')?.valueChanges.subscribe(() => {
       this.calculationResult.set(null);
       this.amountState.set({
@@ -88,7 +91,7 @@ export class App implements OnInit {
       return true;
     }
 
-    const currentNewAmount = this.form.getRawValue().newAmount;
+    const currentNewAmount = this.getNumericAmount(this.form.get('newAmount'));
     const currentType = this.form.getRawValue().calculateType;
 
     const isSameAmount = currentNewAmount === this.newAmount();
@@ -106,7 +109,7 @@ export class App implements OnInit {
   onSubmit() {
     if (this.form?.valid) {
       const formValues = this.form.getRawValue();
-      const newAmount = formValues.newAmount;
+      const newAmount = this.getNumericAmount(this.form.get('newAmount'));
       const calculateType = formValues.calculateType;
 
       if (newAmount === this.newAmount() && calculateType === this.calculateType()) {
@@ -124,11 +127,16 @@ export class App implements OnInit {
         oldAmount: this.oldAmount()
       });
 
+      this.formatInputAmount(this.form.get('newAmount'));
+      this.formatInputAmount(this.form.get('oldAmount'));
+
       if (calculateType === CalculateTypeEnum.BACK) {
         this.calculateOnBackend();
       } else if (calculateType === CalculateTypeEnum.FRONT) {
         this.calculateOnFrontend();
       }
+
+      this.focusInput();
     }
   }
 
@@ -165,5 +173,25 @@ export class App implements OnInit {
           }
         });
     }, 200);
+  }
+
+  formatInputAmount(input: AbstractControl | null): void {
+    if (!input?.value) return;
+
+    const normalized = input.value.toString().replace(',', '.');
+    const value = Number.parseFloat(normalized);
+
+    if (!Number.isNaN(value)) {
+      const germanFormat = value.toFixed(2).replace('.', ',');
+      input.setValue(germanFormat, { emitEvent: false });
+    }
+  }
+
+  getNumericAmount(input: AbstractControl | null): number {
+    const value = input?.value;
+    if (!value) return 0;
+
+    const normalized = value.toString().replace(',', '.');
+    return Number.parseFloat(normalized);
   }
 }
