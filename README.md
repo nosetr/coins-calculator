@@ -107,3 +107,26 @@ Um die Tests auszuführen, navigiere in das Frontend-Verzeichnis (``/frontend``)
 ```bash
 npm test # oder: ng test
 ```
+
+### E2E-Tests (Playwright)
+
+Die End-to-End-Tests werden mit **Playwright** durchgeführt.
+
+Falls noch nicht geschehen, installiere die Playwright-Abhängigkeiten in Frontend-Verzeichnis (``/frontend``) mit dem folgenden Befehl:
+
+```bash
+npm install
+npx playwright install
+```
+
+Um die E2E-Tests auszuführen, navigiere in das Frontend-Verzeichnis (``/frontend``) und führe den folgenden Befehl aus:
+
+```bash
+npx playwright test # Im Headless-Modus (Hintergrund) ausführen
+
+npx playwright test --ui # Tests mit der Playwright UI-Oberfläche öffnen
+
+npx playwright test --debug # Tests im Debug-Modus (Schritt-für-Schritt) öffnen
+```
+
+
